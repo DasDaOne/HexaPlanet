@@ -9,11 +9,12 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] private float initRotationSpeed;
     [SerializeField] private float zoomSpeed;
+    [SerializeField] private float zoomYOffsetSpeed;
     [SerializeField] private float hitAnimationFactor;
     [SerializeField] private float hitAnimationSpeed;
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private Transform cameraZoomAnimationTransform;
-
+    
     private float rotationSpeed;
     private bool moving;
     private List<float> magnitudes = new List<float>();
@@ -47,7 +48,7 @@ public class CameraController : MonoBehaviour
     {
         SpinCamera();
         ZoomAnimation();
-        if (Input.touchCount == 1 && !moving)
+        if (Input.touchCount == 1)
         {
             HitMineral();
         }
@@ -148,8 +149,10 @@ public class CameraController : MonoBehaviour
             initFingerDistance = currentFingerDistance;
 
             float z = Mathf.Clamp(cameraTransform.localPosition.z + zoomDelta * Time.deltaTime * zoomSpeed, -10, 10);
+            float y = Mathf.Clamp(cameraTransform.localPosition.y + zoomDelta * Time.deltaTime * zoomYOffsetSpeed, -4,
+                -1);
             
-            cameraTransform.localPosition = new Vector3(0,0, z);
+            cameraTransform.localPosition = new Vector3(0, y, z);
         }
     }
 

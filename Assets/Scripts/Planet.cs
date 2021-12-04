@@ -13,16 +13,9 @@ public class Planet : MonoBehaviour
     // 1 - DeadGround
     
     
-    private CameraController cameraController;
-
-    private Vector3 initScale;
-    private Vector3 targetScale;
-    
     private void Start()
     {
-        cameraController = Camera.main.GetComponent<CameraController>();
         CreateHexagons();
-        initScale = transform.localScale;
     }
 
     private void CreateHexagons()
@@ -49,20 +42,4 @@ public class Planet : MonoBehaviour
             }
         }
     }
-
-    // void PlanetSizeAnimation()
-    // {
-    //     if ((targetScale - transform.localScale).magnitude < .1f)
-    //     {
-    //         targetScale = initScale;
-    //     }
-    //     transform.localScale = Vector3.Lerp(transform.localScale, targetScale, .5f);
-    // }
-    //
-    //
-    //
-    // public void AddPlanetSizeAnimation()
-    // {
-    //     targetScale = transform.localScale + Vector3.one * scaleFactor;
-    // }
 }
