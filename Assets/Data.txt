@@ -1,0 +1,8 @@
+Resources:
+Wood - craft
+Stone - craft
+Iron - craft/trade
+Titan - craft/trade
+Gold - trade
+Diamonds - trade
+

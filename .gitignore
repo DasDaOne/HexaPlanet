@@ -1,0 +1,8 @@
+[Tt]emp/
+[Ll]ogs/
+[Ll]ibrary/
+.idea/
+.git/
+obj/
+*.sln
+*.csproj
