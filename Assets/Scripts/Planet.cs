@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 public class Planet : MonoBehaviour
 {
     [SerializeField] private Transform hexagons;
+    [SerializeField] private float rotationSpeed;
     [SerializeField] private GameObject[] tiles;
     // 0 - Stone
     // 1 - DeadGround
@@ -16,6 +17,11 @@ public class Planet : MonoBehaviour
     private void Start()
     {
         CreateHexagons();
+    }
+
+    private void Update()
+    {
+        transform.Rotate(0, rotationSpeed * Time.deltaTime, 0);
     }
 
     private void CreateHexagons()

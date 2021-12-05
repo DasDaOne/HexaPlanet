@@ -8,30 +8,22 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [SerializeField] private float initRotationSpeed;
-    [SerializeField] private float zoomSpeed;
-    [SerializeField] private float zoomYOffsetSpeed;
-    [SerializeField] private float hitAnimationFactor;
-    [SerializeField] private float hitAnimationSpeed;
-    [SerializeField] private Transform cameraTransform;
-    [SerializeField] private Transform cameraZoomAnimationTransform;
+    [SerializeField] private ZoomController zoomController;
+    [SerializeField] private ZoomAnimationController zoomAnimationController;
     
     private float rotationSpeed;
     private bool moving;
     private List<float> magnitudes = new List<float>();
     private List<Vector3> normales = new List<Vector3>();
     private Vector2 futureRotation;
-    private float zoom;
 
     private float targetZ;
-    
-    private float initDistance;
     
     private GameManager gm;
     private Planet planet;
     private Camera camera;
     private Transform planetTransform;
-
-    private float initFingerDistance;
+    
 
 
     private void Start()
@@ -41,20 +33,14 @@ public class CameraController : MonoBehaviour
         planet = GameObject.FindWithTag("Planet").GetComponent<Planet>();
         planetTransform = planet.transform;
         rotationSpeed = initRotationSpeed;
-        initDistance = Vector3.Distance(transform.position, planetTransform.position);
     }
 
     private void Update()
     {
         SpinCamera();
-        ZoomAnimation();
         if (Input.touchCount == 1)
         {
             HitMineral();
-        }
-        else if (Input.touchCount == 2)
-        {
-            Zoom();
         }
     }
 
@@ -70,29 +56,16 @@ public class CameraController : MonoBehaviour
                 if (hit.collider.CompareTag("Stone"))
                 {
                     gm.AddMaterial(1);
-                    AddZoomAnimation();
+                    zoomAnimationController.AddZoomAnimation();
                 }
             }
         }
     }
-
-    void ZoomAnimation()
-    {
-        if (targetZ - cameraZoomAnimationTransform.localPosition.z < .1f)
-            targetZ = 0;
-        cameraZoomAnimationTransform.localPosition = Vector3.Lerp(cameraZoomAnimationTransform.localPosition, new Vector3(0, 0, targetZ), hitAnimationSpeed);
-    }
-
-    void AddZoomAnimation()
-    {
-        targetZ += hitAnimationFactor + hitAnimationFactor * Remap(zoom, -10, 10, -.8f, 0);
-        targetZ = Mathf.Clamp(targetZ, 0, 4);
-    }
+    
 
     void SpinCamera()
     {
-        zoom = Vector3.Distance(cameraTransform.position, planetTransform.position) - initDistance;
-        rotationSpeed = initRotationSpeed + initRotationSpeed * Remap(zoom, -10, 10, -.2f, 2f);
+        rotationSpeed = initRotationSpeed + initRotationSpeed * Remap(zoomController.zoom, -10, 10, -.2f, 2f);
         if (Input.touchCount >= 1 && Input.touchCount <= 2)
         {
             Vector3 deltaPos;
@@ -132,29 +105,6 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    private void Zoom()
-    {
-        Touch t1 = Input.touches[0];
-        Touch t2 = Input.touches[1];
-
-        if (t2.phase == TouchPhase.Began)
-        {
-            initFingerDistance = Vector2.Distance(t1.position, t2.position);
-        }
-        else if (t1.phase == TouchPhase.Moved || t2.phase == TouchPhase.Moved)
-        {
-            float currentFingerDistance = Vector2.Distance(t1.position, t2.position);
-            float zoomDelta = currentFingerDistance - initFingerDistance;
-
-            initFingerDistance = currentFingerDistance;
-
-            float z = Mathf.Clamp(cameraTransform.localPosition.z + zoomDelta * Time.deltaTime * zoomSpeed, -10, 10);
-            float y = Mathf.Clamp(cameraTransform.localPosition.y + zoomDelta * Time.deltaTime * zoomYOffsetSpeed, -4,
-                -1);
-            
-            cameraTransform.localPosition = new Vector3(0, y, z);
-        }
-    }
 
     private float Remap(float value, float min1, float max1, float min2, float max2)
     {
