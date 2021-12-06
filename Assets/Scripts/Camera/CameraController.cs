@@ -66,13 +66,9 @@ public class CameraController : MonoBehaviour
     void SpinCamera()
     {
         rotationSpeed = initRotationSpeed + initRotationSpeed * Remap(zoomController.zoom, -10, 10, -.2f, 2f);
-        if (Input.touchCount >= 1 && Input.touchCount <= 2)
+        if (Input.touchCount > 0)
         {
-            Vector3 deltaPos;
-            if (Input.touchCount == 1)
-                deltaPos = Input.touches[0].deltaPosition;
-            else
-                deltaPos = new Vector3(Input.touches.Sum(x => x.deltaPosition.x), Input.touches.Sum(x => x.deltaPosition.y)) / 2;
+            Vector3 deltaPos = new Vector3(Input.touches.Sum(x => x.deltaPosition.x), Input.touches.Sum(x => x.deltaPosition.y)) / Input.touchCount;
             deltaPos *= rotationSpeed * Mathf.Deg2Rad * Time.deltaTime;
             deltaPos = new Vector3(deltaPos.x, -deltaPos.y);
             if (deltaPos.magnitude > 0)
@@ -83,12 +79,12 @@ public class CameraController : MonoBehaviour
             if(normales.Count > 5)
                 normales.RemoveAt(0);
             magnitudes.Add(deltaPos.magnitude);
-            if(deltaPos.magnitude < .01f)
+            if(deltaPos.magnitude < .1f)
                 futureRotation = Vector2.zero;
             if(magnitudes.Count > 15)
                 magnitudes.RemoveAt(0);
         }
-        else if (Input.touchCount == 0)
+        else
         {
             if(moving && magnitudes.Count != 0 && normales.Count != 0)
                 futureRotation = new Vector3(normales.Sum(x => x.x), normales.Sum(x => x.y)) / normales.Count * (magnitudes.Sum() / magnitudes.Count);

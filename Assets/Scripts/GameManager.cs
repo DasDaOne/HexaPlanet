@@ -7,10 +7,14 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    private int stone;
+    [Header("Resources")]
+    public int stone;
 
     [Header("Text fields")] 
-    public TextMeshProUGUI stoneText;
+    [SerializeField] private TextMeshProUGUI stoneText;
+
+    [Header("Panel")] 
+    [SerializeField] private GameObject leftPanel;
     
     private void Start()
     {
