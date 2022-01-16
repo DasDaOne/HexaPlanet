@@ -1,8 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -16,20 +13,18 @@ public class CameraController : MonoBehaviour
     private List<float> magnitudes = new List<float>();
     private List<Vector3> normales = new List<Vector3>();
     private Vector2 futureRotation;
-
-    private float targetZ;
     
     private GameManager gm;
     private Planet planet;
-    private Camera camera;
+    private Camera cam;
     private Transform planetTransform;
-    
 
+    private bool lockControl;
 
     private void Start()
     {
         gm = GameObject.FindWithTag("GameController").GetComponent<GameManager>();
-        camera = Camera.main;
+        cam = Camera.main;
         planet = GameObject.FindWithTag("Planet").GetComponent<Planet>();
         planetTransform = planet.transform;
         rotationSpeed = initRotationSpeed;
@@ -37,11 +32,20 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
+        if(lockControl)
+            return;
         SpinCamera();
         if (Input.touchCount == 1)
         {
             HitMineral();
         }
+    }
+
+    public void SwitchLock()
+    {
+        lockControl = !lockControl;
+        zoomController.lockControl = lockControl;
+        zoomAnimationController.lockControl = lockControl;
     }
 
     private void HitMineral()
@@ -50,7 +54,7 @@ public class CameraController : MonoBehaviour
         if (touch.phase == TouchPhase.Ended)
         {
             RaycastHit hit;
-            Ray ray = camera.ScreenPointToRay(new Vector3(touch.position.x, touch.position.y, 0));
+            Ray ray = cam.ScreenPointToRay(new Vector3(touch.position.x, touch.position.y, 0));
             if (Physics.Raycast(ray, out hit, 100f))
             {
                 if (hit.collider.CompareTag("Stone"))

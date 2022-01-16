@@ -13,6 +13,8 @@ public class ZoomController : MonoBehaviour
     private Transform planetTransform;
     private float initDistance;
     
+    public bool lockControl;
+    
     private void Start()
     {
         planetTransform = GameObject.FindWithTag("Planet").transform;
@@ -21,6 +23,8 @@ public class ZoomController : MonoBehaviour
 
     private void Update()
     {
+        if(lockControl)
+            return;
         zoom = Vector3.Distance(transform.position, planetTransform.position) - initDistance;
         if (Input.touchCount == 2)
         {

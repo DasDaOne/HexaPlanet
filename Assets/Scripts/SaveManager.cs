@@ -4,16 +4,33 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Playables;
 
 public class SaveManager : MonoBehaviour
 {
     [SerializeField] private GameManager gameManager;
     [SerializeField] private Planet planet;
+    [SerializeField] private GameObject loadingPanel;
+    [SerializeField] private PlayableDirector introCutScene;
+
     private string savePath;
+
+    private bool canSave;
     
     private void Start()
     {
-        LoadGame();
+        savePath = Application.persistentDataPath + "/save.qnd";
+        StartCoroutine(WaitForLoadGame());
+    }
+
+    private IEnumerator WaitForLoadGame()
+    {
+        loadingPanel.SetActive(true);
+        canSave = false;
+        yield return new WaitUntil(LoadGame);
+        canSave = true;
+        loadingPanel.SetActive(false);
     }
 
     private void OnApplicationPause(bool pauseStatus)
@@ -24,12 +41,12 @@ public class SaveManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        SaveGame();
+        if(canSave)
+            SaveGame();
     }
 
-    void SaveGame()
+    private void SaveGame()
     {
-        savePath = Application.persistentDataPath + "/save.qnd";
         BinaryFormatter bf = new BinaryFormatter();
         FileStream stream = new FileStream(savePath, FileMode.Create);
         Dictionary<int, Hexagon> hexagons = planet.SaveHexagons();
@@ -39,24 +56,32 @@ public class SaveManager : MonoBehaviour
         stream.Close();
     }
 
-    void LoadGame()
+    private bool LoadGame()
     {
-        savePath = Application.persistentDataPath + "/save.qnd";
-        if (!File.Exists(savePath))
+        FileInfo file = new FileInfo(savePath);
+        if (!File.Exists(savePath) || file.Length == 0)
         {
             planet.InitializeHexagons();
-            return;
+            introCutScene.Play();
+            return true;
         }
         BinaryFormatter bf = new BinaryFormatter();
         FileStream stream = new FileStream(savePath, FileMode.Open);
+        
         SaveData data = bf.Deserialize(stream) as SaveData;
         stream.Flush();
         stream.Close();
         gameManager.stone = data.stoneAmount;
-        if(data.hexagons != null)
-            planet.LoadHexagons(data.hexagons);
-        else
-            planet.InitializeHexagons();
+        planet.LoadHexagons(data.hexagons);
+        return true;
+    }
+
+    public void ResetGameData()
+    {
+        if (File.Exists(savePath))
+        {
+            File.Delete(savePath);
+        }
     }
 }
 

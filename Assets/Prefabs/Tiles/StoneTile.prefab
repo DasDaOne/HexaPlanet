@@ -46,9 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17ff302aeb177e54280b601bf6893bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 0
+  index: 1
   hexagon:
     index: 0
+    rotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!33 &7272110924711464305
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -56,7 +57,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6345485436836993134}
-  m_Mesh: {fileID: 2534964839176971238, guid: a57c589d0a5b9484196aa64a36542719, type: 3}
+  m_Mesh: {fileID: 2534964839176971238, guid: 5dc1838c2569e04448148f3969a65f79, type: 3}
 --- !u!23 &4832165667995843003
 MeshRenderer:
   m_ObjectHideFlags: 0

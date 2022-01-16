@@ -1,6 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class HexagonHolder : MonoBehaviour
@@ -18,6 +17,7 @@ public class HexagonHolder : MonoBehaviour
 public class Hexagon
 {
     public int index;
+    
 
     public Hexagon(int index)
     {

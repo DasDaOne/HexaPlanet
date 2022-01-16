@@ -1,9 +1,9 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -13,17 +13,24 @@ public class GameManager : MonoBehaviour
     [Header("Text fields")] 
     [SerializeField] private TextMeshProUGUI stoneText;
 
-    [Header("Panel")] 
-    [SerializeField] private GameObject leftPanel;
+    private SaveManager saveManager;
+    
     
     private void Start()
     {
+        saveManager = GetComponent<SaveManager>();
         Screen.orientation = ScreenOrientation.Portrait;
     }
 
     private void Update()
     {
         UpdateUI();
+    }
+
+    public void ResetProgress()
+    {
+        saveManager.ResetGameData();
+        SceneManager.LoadScene(0);
     }
 
     private void UpdateUI()

@@ -10,9 +10,13 @@ public class ZoomAnimationController : MonoBehaviour
     [SerializeField] private ZoomController zoomController;
 
     private float targetZ;
+    
+    public bool lockControl;
 
     private void Update()
     {
+        if (lockControl)
+            return;
         ZoomAnimation();
     }
 
