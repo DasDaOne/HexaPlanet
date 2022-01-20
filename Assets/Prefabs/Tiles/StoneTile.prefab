@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4282911256188231887}
   - component: {fileID: 7272110924711464305}
   - component: {fileID: 4832165667995843003}
-  - component: {fileID: 2680215069993711984}
+  - component: {fileID: 6178479114655993305}
   m_Layer: 0
   m_Name: StoneTile
   m_TagString: Stone
@@ -49,7 +49,6 @@ MonoBehaviour:
   index: 1
   hexagon:
     index: 0
-    rotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!33 &7272110924711464305
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -99,8 +98,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &2680215069993711984
-CapsuleCollider:
+--- !u!135 &6178479114655993305
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -109,7 +108,6 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
+  serializedVersion: 2
   m_Radius: 1
-  m_Height: 3
-  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}

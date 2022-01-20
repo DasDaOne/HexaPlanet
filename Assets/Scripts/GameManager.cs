@@ -10,9 +10,10 @@ public class GameManager : MonoBehaviour
     [Header("Resources")]
     public int stone;
 
-    [Header("Text fields")] 
+    [Header("UI")] 
     [SerializeField] private TextMeshProUGUI stoneText;
-
+    [SerializeField] private BottomPanelAnimation shopAnimator;
+    
     private SaveManager saveManager;
     
     
@@ -25,6 +26,11 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         UpdateUI();
+    }
+
+    public void ShowShop()
+    {
+        shopAnimator.PlayAnimation();
     }
 
     public void ResetProgress()

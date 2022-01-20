@@ -1,6 +1,9 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraController : MonoBehaviour
 {
@@ -35,9 +38,12 @@ public class CameraController : MonoBehaviour
         if(lockControl)
             return;
         SpinCamera();
-        if (Input.touchCount == 1)
+        int touchId = -1;
+        if(Input.touchCount > 0)
+            touchId = Input.touches[0].fingerId;
+        if (Input.touchCount == 1 && !(touchId != -1 && EventSystem.current.IsPointerOverGameObject(touchId)))
         {
-            HitMineral();
+            StartCoroutine(HitMineral(Input.touches[0]));
         }
     }
 
@@ -48,19 +54,24 @@ public class CameraController : MonoBehaviour
         zoomAnimationController.lockControl = lockControl;
     }
 
-    private void HitMineral()
+    private IEnumerator HitMineral(Touch touch)
     {
-        Touch touch = Input.touches[0];
-        if (touch.phase == TouchPhase.Ended)
+        yield return new WaitForSeconds(.1f);
+        if (touch.phase == TouchPhase.Began && !moving)
         {
             RaycastHit hit;
             Ray ray = cam.ScreenPointToRay(new Vector3(touch.position.x, touch.position.y, 0));
             if (Physics.Raycast(ray, out hit, 100f))
             {
-                if (hit.collider.CompareTag("Stone"))
+                switch (hit.collider.tag)
                 {
-                    gm.AddMaterial(1);
-                    zoomAnimationController.AddZoomAnimation();
+                    case "Stone":
+                        gm.AddMaterial(1);
+                        zoomAnimationController.AddZoomAnimation();
+                        break;
+                    case "Cosmodrome":
+                        gm.ShowShop();
+                        break;
                 }
             }
         }
@@ -69,15 +80,18 @@ public class CameraController : MonoBehaviour
 
     void SpinCamera()
     {
+        int touchId = -1;
+        if(Input.touchCount > 0)
+            touchId = Input.touches[0].fingerId;
         rotationSpeed = initRotationSpeed + initRotationSpeed * Remap(zoomController.zoom, -10, 10, -.2f, 2f);
-        if (Input.touchCount > 0)
+        if (Input.touchCount > 0 && !(touchId != -1 && EventSystem.current.IsPointerOverGameObject(touchId)))
         {
             Vector3 deltaPos = new Vector3(Input.touches.Sum(x => x.deltaPosition.x), Input.touches.Sum(x => x.deltaPosition.y)) / Input.touchCount;
             deltaPos *= rotationSpeed * Mathf.Deg2Rad * Time.deltaTime;
             deltaPos = new Vector3(deltaPos.x, -deltaPos.y);
             if (deltaPos.magnitude > 0)
                 moving = true;
-            transform.RotateAround(planetTransform.position, transform.up, deltaPos.x);
+            transform.RotateAround(planetTransform.position, transform.up, deltaPos.x);        
             transform.RotateAround(planetTransform.position, transform.right, deltaPos.y);
             normales.Add(deltaPos.normalized);
             if(normales.Count > 5)

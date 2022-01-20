@@ -7,6 +7,7 @@ TagManager:
   - Planet
   - Tree
   - Stone
+  - Cosmodrome
   layers:
   - Default
   - TransparentFX
