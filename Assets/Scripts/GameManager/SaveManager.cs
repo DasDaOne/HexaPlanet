@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Playables;
 
 public class SaveManager : MonoBehaviour
@@ -71,7 +70,7 @@ public class SaveManager : MonoBehaviour
         SaveData data = bf.Deserialize(stream) as SaveData;
         stream.Flush();
         stream.Close();
-        gameManager.stone = data.stoneAmount;
+        // gameManager.stone = data.stoneAmount;
         planet.LoadHexagons(data.hexagons);
         return true;
     }
@@ -93,7 +92,7 @@ class SaveData
 
     public SaveData(GameManager gm, Dictionary<int, Hexagon> _hexagons)
     {
-        stoneAmount = gm.stone;
+        // stoneAmount = gm.stone;
         hexagons = _hexagons;
     }
 }

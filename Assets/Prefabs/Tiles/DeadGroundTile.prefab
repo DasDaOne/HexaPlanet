@@ -45,10 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17ff302aeb177e54280b601bf6893bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 2
+  index: 1
   hexagon:
     index: 0
-    rotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!33 &3792192973197821573
 MeshFilter:
   m_ObjectHideFlags: 0

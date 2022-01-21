@@ -1,14 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
 public class LeftPanelAnimation : MonoBehaviour
 {
+    [SerializeField] private float xPosition;
     private RectTransform rectTransform;
     private bool shown;
     private Tween currentAnimation;
-    
+
+
     private void Start()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -22,18 +22,37 @@ public class LeftPanelAnimation : MonoBehaviour
         else
             ShowLeftPanel();
     }
+    
+    public void PlayShowAnimation()
+    {
+
+        if (!shown)
+        {
+            currentAnimation.Kill();
+            ShowLeftPanel();
+        }
+    }
+    
+    public void PlayHideAnimation()
+    {
+        if (shown)
+        {
+            currentAnimation.Kill();
+            HideLeftPanel();
+        }
+    }
 
     private void ShowLeftPanel()
     {
-        currentAnimation = DOTween.To(() => rectTransform.anchoredPosition, x => rectTransform.anchoredPosition = x,
-            Vector2.zero, .7f);
         shown = true;
+        currentAnimation = DOTween.To(() => rectTransform.anchoredPosition, x => rectTransform.anchoredPosition = x,
+            new Vector2(xPosition, 0), .7f);
     }
 
     private void HideLeftPanel()
     {
-        currentAnimation = DOTween.To(() => rectTransform.anchoredPosition, x => rectTransform.anchoredPosition = x,
-            new Vector2(-rectTransform.sizeDelta.x,0), .7f);
         shown = false;
+        currentAnimation = DOTween.To(() => rectTransform.anchoredPosition, x => rectTransform.anchoredPosition = x,
+            new Vector2(-rectTransform.sizeDelta.x - xPosition,0), .7f);
     }
 }

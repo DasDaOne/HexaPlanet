@@ -1,19 +1,22 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 
 public class Planet : MonoBehaviour
 {
+    [SerializeField] private GameManager gm;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private GameObject hexagonsPrefab;
     [SerializeField] private GameObject[] tiles;
-    // 1 - Stone
-    // 2 - DeadGround
+    // 0 - Stone
+    // 1 - DeadGround
     [SerializeField] private GameObject[] buildings;
+
+
     // 0 - Cosmodrome
+
 
     private bool canRotate = true;
 
@@ -58,7 +61,7 @@ public class Planet : MonoBehaviour
             }
             if (Random.Range(0, 10) < 2)
             {
-                GameObject stone = Instantiate(tiles[1], child.position, child.rotation, hexagonsHolder.transform);
+                GameObject stone = Instantiate(tiles[0], child.position, child.rotation, hexagonsHolder.transform);
                 SetRotationScaleName(stone, child);
                 Destroy(child.gameObject);
             }
@@ -68,7 +71,7 @@ public class Planet : MonoBehaviour
             }
             else
             {
-                GameObject deadGround = Instantiate(tiles[2], child.position, child.rotation, hexagonsHolder.transform);
+                GameObject deadGround = Instantiate(tiles[1], child.position, child.rotation, hexagonsHolder.transform);
                 SetRotationScaleName(deadGround, child);
                 Destroy(child.gameObject);
             }
@@ -138,6 +141,11 @@ public class Planet : MonoBehaviour
                 GameObject tile;
                 if (hexagons[childName].index >= 0)
                 {
+                    if (hexagons[childName].index >= tiles.Length)
+                    {
+                        gm.ResetProgress();
+                        return;
+                    }
                     tile = Instantiate(tiles[hexagons[childName].index], child.position,
                         child.rotation, hexagonsHolder.transform);
                     SetRotationScaleName(tile, child);

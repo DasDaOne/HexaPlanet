@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +15,7 @@ public class CameraController : MonoBehaviour
     private List<float> magnitudes = new List<float>();
     private List<Vector3> normales = new List<Vector3>();
     private Vector2 futureRotation;
+    private bool touchWasOnUI = true;
     
     private GameManager gm;
     private Planet planet;
@@ -39,19 +39,14 @@ public class CameraController : MonoBehaviour
             return;
         SpinCamera();
         int touchId = -1;
-        if(Input.touchCount > 0)
+        if (Input.touchCount > 0)
+        {
             touchId = Input.touches[0].fingerId;
+        }
         if (Input.touchCount == 1 && !(touchId != -1 && EventSystem.current.IsPointerOverGameObject(touchId)))
         {
             StartCoroutine(HitMineral(Input.touches[0]));
         }
-    }
-
-    public void SwitchLock()
-    {
-        lockControl = !lockControl;
-        zoomController.lockControl = lockControl;
-        zoomAnimationController.lockControl = lockControl;
     }
 
     private IEnumerator HitMineral(Touch touch)
@@ -66,7 +61,7 @@ public class CameraController : MonoBehaviour
                 switch (hit.collider.tag)
                 {
                     case "Stone":
-                        gm.AddMaterial(1);
+                        // add material
                         zoomAnimationController.AddZoomAnimation();
                         break;
                     case "Cosmodrome":
@@ -84,8 +79,10 @@ public class CameraController : MonoBehaviour
         if(Input.touchCount > 0)
             touchId = Input.touches[0].fingerId;
         rotationSpeed = initRotationSpeed + initRotationSpeed * Remap(zoomController.zoom, -10, 10, -.2f, 2f);
-        if (Input.touchCount > 0 && !(touchId != -1 && EventSystem.current.IsPointerOverGameObject(touchId)))
+        if (Input.touchCount > 0 && !EventSystem.current.IsPointerOverGameObject(touchId) && Input.touches[0].phase != TouchPhase.Ended)
         {
+            Debug.Log(2);
+            touchWasOnUI = false;
             Vector3 deltaPos = new Vector3(Input.touches.Sum(x => x.deltaPosition.x), Input.touches.Sum(x => x.deltaPosition.y)) / Input.touchCount;
             deltaPos *= rotationSpeed * Mathf.Deg2Rad * Time.deltaTime;
             deltaPos = new Vector3(deltaPos.x, -deltaPos.y);
@@ -102,16 +99,15 @@ public class CameraController : MonoBehaviour
             if(magnitudes.Count > 15)
                 magnitudes.RemoveAt(0);
         }
-        else
+        else if(!touchWasOnUI)
         {
             if(moving && magnitudes.Count != 0 && normales.Count != 0)
                 futureRotation = new Vector3(normales.Sum(x => x.x), normales.Sum(x => x.y)) / normales.Count * (magnitudes.Sum() / magnitudes.Count);
-            else if (!moving)
+            if (!moving)
             {
                 magnitudes.Clear();
                 normales.Clear();
             }
-
             moving = false;
             transform.RotateAround(planetTransform.position, transform.up, futureRotation.x);
             transform.RotateAround(planetTransform.position, transform.right, futureRotation.y);

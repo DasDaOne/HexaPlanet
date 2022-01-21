@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1995904381056625675}
   - component: {fileID: 1995904381056625674}
   m_Layer: 0
-  m_Name: CutsceneManager
+  m_Name: IntroCutscene
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
