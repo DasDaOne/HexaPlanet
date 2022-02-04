@@ -1,16 +1,22 @@
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public class CounterButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    [SerializeField] private float period;
+    [SerializeField] private float originalPeriod;
     [SerializeField] private float speedUpPeriod;
-    [SerializeField] private LongUnityEvent holdEvent;
+    [SerializeField] private UnityEvent holdEvent;
     private bool isPointerDown;
     private float timer;
     private float speedUpTimer;
-    private long toAdd;
+    private float period;
 
+    private void Start()
+    {
+        period = originalPeriod;
+    }
 
     private void Update()
     {
@@ -23,13 +29,13 @@ public class CounterButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
         if (timer >= period)
         {
-            holdEvent.Invoke(toAdd);
+            holdEvent.Invoke();
             timer = 0;
         }
 
         if (speedUpTimer > speedUpPeriod)
         {
-            toAdd += Mathf.RoundToInt(toAdd * .8f);
+            period /= 1.1f;
             speedUpTimer = 0;
         }
 
@@ -40,12 +46,12 @@ public class CounterButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     public void OnPointerDown(PointerEventData eventData)
     {
         isPointerDown = true;
-        holdEvent.Invoke(1);
+        holdEvent.Invoke();
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        period = originalPeriod;
         isPointerDown = false;
-        toAdd = 1;
     }
 }

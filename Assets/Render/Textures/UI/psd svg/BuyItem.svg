@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 26.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Слой_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 500 500" style="enable-background:new 0 0 500 500;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFFFFF;}
+	.st1{fill:none;stroke:#000000;stroke-width:20;stroke-linecap:round;stroke-miterlimit:10;}
+	.st2{fill:#939393;}
+</style>
+<g>
+	<path class="st0" d="M40,490c-16.5,0-30-13.5-30-30V40c0-16.5,13.5-30,30-30h420c16.5,0,30,13.5,30,30v420c0,16.5-13.5,30-30,30H40
+		z"/>
+	<path d="M460,20c11,0,20,9,20,20v420c0,11-9,20-20,20H40c-11,0-20-9-20-20V40c0-11,9-20,20-20H460 M460,0H40C17.9,0,0,17.9,0,40
+		v420c0,22.1,17.9,40,40,40h420c22.1,0,40-17.9,40-40V40C500,17.9,482.1,0,460,0L460,0z"/>
+</g>
+<g>
+	<line class="st1" x1="285" y1="240" x2="445" y2="240"/>
+</g>
+<line class="st1" x1="60" y1="326" x2="440" y2="326"/>
+<path class="st2" d="M90,240c-16.5,0-30-13.5-30-30V90c0-16.5,13.5-30,30-30h120c16.5,0,30,13.5,30,30v120c0,16.5-13.5,30-30,30H90z
+	"/>
+<path d="M210,70c11,0,20,9,20,20v120c0,11-9,20-20,20H90c-11,0-20-9-20-20V90c0-11,9-20,20-20H210 M210,50H90c-22.1,0-40,17.9-40,40
+	v120c0,22.1,17.9,40,40,40h120c22.1,0,40-17.9,40-40V90C250,67.9,232.1,50,210,50L210,50z"/>
+</svg>

@@ -1,5 +1,7 @@
+using System;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(RectTransform))]
 public class BottomPanelAnimation : MonoBehaviour
@@ -11,6 +13,16 @@ public class BottomPanelAnimation : MonoBehaviour
     private void Start()
     {
         rectTransform = GetComponent<RectTransform>();
+    }
+
+    private void Update()
+    {
+        if (Input.touchCount > 0 && !EventSystem.current.IsPointerOverGameObject(Input.touches[0].fingerId) 
+            || Input.GetKeyDown(KeyCode.Mouse0) && !EventSystem.current.IsPointerOverGameObject())
+        { 
+            currentAnimation.Kill();
+            HideBottomPanel();
+        }
     }
 
     public void PlayAnimation()

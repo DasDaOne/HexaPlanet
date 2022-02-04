@@ -3,14 +3,13 @@ using UnityEngine;
 public class ZoomController : MonoBehaviour
 {
     [SerializeField] private float zoomSpeed;
+    [SerializeField] private float mouseZoomSpeed;
     private float initFingerDistance;
 
     [HideInInspector] public float zoom;
 
     private Transform planetTransform;
     private float initDistance;
-    
-    public bool lockControl;
     
     private void Start()
     {
@@ -20,12 +19,15 @@ public class ZoomController : MonoBehaviour
 
     private void Update()
     {
-        if(lockControl)
-            return;
         zoom = Vector3.Distance(transform.position, planetTransform.position) - initDistance;
         if (Input.touchCount == 2)
         {
             Zoom();
+        }
+        
+        if (Input.mouseScrollDelta != Vector2.zero)
+        {
+            ZoomMouse();
         }
     }
 
@@ -47,7 +49,13 @@ public class ZoomController : MonoBehaviour
 
             float z = Mathf.Clamp(transform.localPosition.z + zoomDelta * Time.deltaTime * zoomSpeed, -10, 10);
             
-            transform.localPosition = new Vector3(0, transform.localPosition.y, z);
+            transform.localPosition = new Vector3(0, 0, z);
         }
+    }
+
+    private void ZoomMouse()
+    {
+        float z = Mathf.Clamp(transform.localPosition.z + Input.mouseScrollDelta.y * Time.deltaTime * mouseZoomSpeed, -10, 10);
+        transform.localPosition = new Vector3(0, 0, z);
     }
 }

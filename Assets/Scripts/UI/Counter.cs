@@ -1,26 +1,77 @@
 using System;
+using DG.Tweening;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.UI;
 
+[RequireComponent(typeof(Image))]
 public class Counter : MonoBehaviour
 {
-    public long value;
-    public TextMeshProUGUI text;
+    private Resources resources;
+    private int value;
+    [SerializeField] private TextMeshProUGUI text;
+    [SerializeField] private string index;
+    private Shop shop;
+    private Image image;
 
-    public void Add(long toAdd)
+    private void Start()
     {
-        value += toAdd;
-        text.text = value.ToString();
+        shop = FindObjectOfType<Shop>();
+        resources = FindObjectOfType<Resources>();
+        image = GetComponent<Image>();
+        shop.AddListener(Reset);
+    }
+
+    public void Add()
+    {
+        if(value < 1000)
+            value += 1;
+        else if (value < 1000000)
+            value += 100;
+        else if (value < 1000000000)
+            value += 1000;
+        else
+            value += 10000;
+        if (value >= resources.GetResource(index))
+        {
+            value = resources.GetResource(index);
+            ReachedBoundsAnimation();
+        }
+        ChangeText();
+        AddSellRequest();
+    }
+
+    public void Subtract()
+    {
+        if(value < 1000)
+            value -= 1;
+        else if (value < 1000000)
+            value -= 100;
+        else if (value < 1000000000)
+            value -= 1000;
+        else
+            value -= 10000;
+        if (value < 0)
+        {
+            value = 0;
+            ReachedBoundsAnimation();
+        }
+        ChangeText();
+        AddSellRequest();
+    }
+
+    private void Reset()
+    {
+        value = 0;
         ChangeText();
     }
 
-    public void Subtract(long toSubtract)
+    private void ReachedBoundsAnimation()
     {
-        value -= toSubtract;
-        if (value < 0)
-            value = 0;
-        ChangeText();
+        Sequence reachedBoundsAnimation = DOTween.Sequence();
+        reachedBoundsAnimation.Append(image.DOColor(Color.red, .1f));
+        reachedBoundsAnimation.Append(image.DOColor(Color.white, .1f));
     }
 
     private void ChangeText()
@@ -31,5 +82,12 @@ public class Counter : MonoBehaviour
             text.text = Math.Round(value / Math.Pow(10.0, 6), 1) + "M";
         else if (value > Math.Pow(10, 3))
             text.text = Math.Round(value / Math.Pow(10.0, 3), 1) + "K";
+        else
+            text.text = value.ToString();
+    }
+    
+    private void AddSellRequest() 
+    {
+        shop.AddSellRequest(index, value);
     }
 }

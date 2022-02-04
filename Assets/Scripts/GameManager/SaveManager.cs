@@ -8,17 +8,21 @@ using UnityEngine.Playables;
 
 public class SaveManager : MonoBehaviour
 {
-    [SerializeField] private GameManager gameManager;
     [SerializeField] private Planet planet;
     [SerializeField] private GameObject loadingPanel;
     [SerializeField] private PlayableDirector introCutScene;
-
+    [SerializeField] private ShipRequestButton shipRequestButton;
+    private Resources resources;
+    private GameManager gm;
+    
     private string savePath;
 
     private bool canSave;
     
     private void Start()
     {
+        resources = GetComponent<Resources>();
+        gm = GetComponent<GameManager>();
         savePath = Application.persistentDataPath + "/save.qnd";
         StartCoroutine(WaitForLoadGame());
     }
@@ -49,7 +53,7 @@ public class SaveManager : MonoBehaviour
         BinaryFormatter bf = new BinaryFormatter();
         FileStream stream = new FileStream(savePath, FileMode.Create);
         Dictionary<int, Hexagon> hexagons = planet.SaveHexagons();
-        SaveData data = new SaveData(gameManager, hexagons);
+        SaveData data = new SaveData(resources.GetAllResources(), hexagons, shipRequestButton.timer);
         bf.Serialize(stream, data);
         stream.Flush();
         stream.Close();
@@ -66,12 +70,14 @@ public class SaveManager : MonoBehaviour
         }
         BinaryFormatter bf = new BinaryFormatter();
         FileStream stream = new FileStream(savePath, FileMode.Open);
-        
         SaveData data = bf.Deserialize(stream) as SaveData;
         stream.Flush();
         stream.Close();
-        // gameManager.stone = data.stoneAmount;
+        if(data == null)
+            gm.ResetProgress();
+        resources.SetAllResources(data.resources);
         planet.LoadHexagons(data.hexagons);
+        shipRequestButton.timer = data.shipRequestDateTime;
         return true;
     }
 
@@ -87,12 +93,14 @@ public class SaveManager : MonoBehaviour
 [Serializable]
 class SaveData
 {
-    public int stoneAmount;
+    public int[] resources;
     public Dictionary<int, Hexagon> hexagons;
+    public DateTime shipRequestDateTime;
 
-    public SaveData(GameManager gm, Dictionary<int, Hexagon> _hexagons)
+    public SaveData(int[] saveResources, Dictionary<int, Hexagon> _hexagons, DateTime shipRequest)
     {
-        // stoneAmount = gm.stone;
+        resources = saveResources;
         hexagons = _hexagons;
+        shipRequestDateTime = shipRequest;
     }
 }

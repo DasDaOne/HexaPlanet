@@ -12,8 +12,6 @@ public class FPSCounter : MonoBehaviour
     private TextMeshProUGUI text;
     private float timeForNextUpdate;
     [SerializeField] private float updateTime;
-    [SerializeField] private TMP_InputField fpsLockInput;
-    [SerializeField] private Toggle fpsLockToggle;
     private bool showFps;
 
     private void Start()
@@ -21,17 +19,7 @@ public class FPSCounter : MonoBehaviour
         text = GetComponent<TextMeshProUGUI>();
     }
 
-    public void SetFpsLock(bool state)
-    {
-        if (state)
-        {
-            Application.targetFrameRate = Int32.Parse(fpsLockInput.text);
-            fpsLockToggle.isOn = true;
-        }
-        else
-            Application.targetFrameRate = 0;
-    }
-
+ 
     public void ShowFps(bool state)
     {
         showFps = state;

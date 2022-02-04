@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -7,30 +8,25 @@ using Random = UnityEngine.Random;
 public class Planet : MonoBehaviour
 {
     [SerializeField] private GameManager gm;
-    [SerializeField] private float rotationSpeed;
     [SerializeField] private GameObject hexagonsPrefab;
     [SerializeField] private GameObject[] tiles;
     // 0 - Stone
     // 1 - DeadGround
     [SerializeField] private GameObject[] buildings;
-
-
+    [SerializeField] private float rotationSpeed;
+    
     // 0 - Cosmodrome
 
 
     private bool canRotate = true;
 
     private GameObject hexagonsHolder;
-    
+
+
     private void Update()
     {
         if(canRotate)
             transform.Rotate(0, rotationSpeed * Time.deltaTime, 0);
-    }
-
-    public void SwitchRotationLock()
-    {
-        canRotate = !canRotate;
     }
 
     public void InitializeHexagons()
@@ -76,6 +72,8 @@ public class Planet : MonoBehaviour
                 Destroy(child.gameObject);
             }
         }
+
+        
     }
 
     private void SetRotationScaleName(GameObject go, Transform child)

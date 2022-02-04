@@ -136,6 +136,7 @@ Material:
     - Color_9695bba2ce9742edbd5733d52e9058c9: {r: 0.1882353, g: 0.7490196, b: 0.019607844,
         a: 0}
     - Color_9b784d7edd91415b98037b209799f1a1: {r: 1, g: 1, b: 1, a: 0.5529412}
+    - Color_a90f17727c634500a8bf8c41bb6fd5ac: {r: 0.4392157, g: 7.215686, b: 0, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
