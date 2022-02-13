@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -20,8 +21,6 @@ public class CameraController : MonoBehaviour
     
     private Vector2 futureRotation;
     private Vector3 prevMousePosition;
-    
-    private bool touchWasOnUI = true;
     
     private GameManager gm;
     private Resources resources;
@@ -53,35 +52,55 @@ public class CameraController : MonoBehaviour
         }
         if (Input.touchCount == 1 && !(touchId != -1 && EventSystem.current.IsPointerOverGameObject(touchId)))
         {
-            StartCoroutine(HitMineral(Input.touches[0]));
+            HitMineral(Input.touches[0]);
+        }
+        else if (Input.GetKeyDown(KeyCode.Mouse0) && Input.touchCount == 0 && !EventSystem.current.IsPointerOverGameObject())
+        {
+            Debug.Log(1);
+            HitMineral(Input.mousePosition);
         }
     }
 
-    private IEnumerator HitMineral(Touch touch)
+    private void HitMineral(Touch touch)
     {
-        yield return new WaitForSeconds(.1f);
-        if (touch.phase == TouchPhase.Began && !moving)
-        {
-            RaycastHit hit;
-            Ray ray = cam.ScreenPointToRay(new Vector3(touch.position.x, touch.position.y, 0));
-            if (Physics.Raycast(ray, out hit, 100f))
+        Observable.Timer(TimeSpan.FromSeconds(.1f)).TakeUntilDisable(gameObject)
+            .Subscribe(x =>
             {
-                switch (hit.collider.tag)
+                if (touch.phase == TouchPhase.Began && !moving)
                 {
-                    case "Cosmodrome":
-                        gm.ShowShop();
-                        break;
-                    case "Planet":
-                        break;
-                    default:
-                        resources.AddResource(hit.collider.tag.ToLower(), 1);
-                        zoomAnimationController.ZoomAnimation();
-                        break;
+                    CheckMineral(cam.ScreenPointToRay(touch.position));
                 }
+            });
+    }
+
+    private void HitMineral(Vector2 mousePos)
+    {
+        if (!moving)
+        {
+            CheckMineral(cam.ScreenPointToRay(mousePos));
+        }
+    }
+
+    private void CheckMineral(Ray ray)
+    {
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        {
+            switch (hit.collider.tag)
+            {
+                case "Cosmodrome":
+                    gm.ShowShop();
+                    break;
+                case "Planet":
+                    break;
+                case "Triangle":
+                    break;
+                default:
+                    resources.AddResource(hit.collider.tag.ToLower(), 1);
+                    zoomAnimationController.ZoomAnimation();
+                    break;
             }
         }
     }
-    
 
     void SpinCamera()
     {
@@ -94,11 +113,11 @@ public class CameraController : MonoBehaviour
             Vector3 deltaPos = new Vector3(Input.touches.Sum(x => x.deltaPosition.x), Input.touches.Sum(x => x.deltaPosition.y)) / Input.touchCount;
             SpinCamera(deltaPos);
         }
-        else if (Input.GetKey(KeyCode.Mouse0) && !EventSystem.current.IsPointerOverGameObject())
-        { 
+        else if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject() && Input.touchCount == 0)
+        {
             SpinCamera(Input.mousePosition - prevMousePosition);
         }
-        else if(!touchWasOnUI)
+        else
         {
             if(moving && magnitudes.Count != 0 && normales.Count != 0)
                 futureRotation = new Vector3(normales.Sum(x => x.x), normales.Sum(x => x.y)) / normales.Count * (magnitudes.Sum() / magnitudes.Count);
@@ -117,7 +136,6 @@ public class CameraController : MonoBehaviour
 
     private void SpinCamera(Vector3 deltaPos)
     {
-        touchWasOnUI = false;
         deltaPos *= rotationSpeed * Mathf.Deg2Rad * Time.deltaTime;
         deltaPos = new Vector3(deltaPos.x, -deltaPos.y);
         if (deltaPos.magnitude > 0)
